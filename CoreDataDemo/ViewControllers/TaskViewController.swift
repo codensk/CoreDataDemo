@@ -124,7 +124,7 @@ final class TaskViewController: UIViewController {
         case .update:
             guard let task = task else { return }
             
-            storage().updateTask(for: task, title: taskTextField.text ?? "")
+            storage().updateTask(for: task, title: taskTextField.text ?? "", completed: task.completed)
         default:
             break
         }

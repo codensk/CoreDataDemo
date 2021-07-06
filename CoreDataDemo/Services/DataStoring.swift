@@ -10,7 +10,7 @@ import Foundation
 protocol DataStoring {
     func addTask(title: String?)
     func fetchTasks() -> [Task]
-    func updateTask(for task: Task, title: String)
+    func updateTask(for task: Task, title: String, completed: Bool)
     func removeTask(task: Task)
     func save()
 }

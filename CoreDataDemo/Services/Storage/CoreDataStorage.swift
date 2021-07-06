@@ -47,8 +47,9 @@ class CoreDataStorage: DataStoring {
         return []
     }
     
-    func updateTask(for task: Task, title: String) {
+    func updateTask(for task: Task, title: String, completed: Bool) {
         task.title = title
+        task.completed = completed
         
         self.save()
     }

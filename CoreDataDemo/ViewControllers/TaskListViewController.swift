@@ -34,6 +34,8 @@ final class TaskListViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.cellId)
         tableView.dataSource = self
         tableView.delegate = self
+        
+        tableView.separatorInset = .zero
     }
 
     private func setupNavigationBar() {
@@ -89,9 +91,18 @@ extension TaskListViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Self.cellId, for: indexPath)
         let task = tasks[indexPath.row]
-
+        
         var content = cell.defaultContentConfiguration()
         content.text = task.title
+        
+        if task.completed {
+            content.image = UIImage(systemName: "checkmark.square")
+            content.imageProperties.tintColor = .systemGreen
+            cell.backgroundColor = UIColor(named: "completedTaskBg")
+        } else {
+            content.image = UIImage(systemName: "square")
+            content.imageProperties.tintColor = .systemGray5
+        }
 
         cell.contentConfiguration = content
 
@@ -112,10 +123,23 @@ extension TaskListViewController {
             self.storage().removeTask(task: task)
         }
         
+        let completeAction = UIContextualAction(style: .normal, title: nil) { (_, _, completionHandler) in
+            let task = self.tasks[indexPath.row]
+        
+            self.storage().updateTask(for: task, title: task.title ?? "", completed: !task.completed)
+            
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            
+            completionHandler(true)
+        }
+        
         deleteAction.image = UIImage(systemName: "trash")
         deleteAction.backgroundColor = .systemRed
         
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        completeAction.image = UIImage(systemName: "checkmark.square")
+        completeAction.backgroundColor = .systemGreen
+        
+        let configuration = UISwipeActionsConfiguration(actions: [completeAction, deleteAction])
         
         return configuration
     }
